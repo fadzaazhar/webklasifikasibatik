@@ -3,7 +3,7 @@ from PIL import Image
 import numpy as np
 import tensorflow as tf
 import cv2
-from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
+from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
 import os
 
 # Load the pre-trained model
@@ -171,7 +171,7 @@ elif choice == "Kamera":
     st.markdown('<p class="header-font">Kamera</p>', unsafe_allow_html=True)
     st.markdown('<p class="description-font">Hanya dapat diakses atau digunakan dengan kamera webcam (desktop).</p>', unsafe_allow_html=True)
 
-    class VideoTransformer(VideoTransformerBase):
+    class VideoProcessor(VideoProcessorBase):
         def __init__(self):
             self.prediction = ""
 
@@ -187,7 +187,7 @@ elif choice == "Kamera":
         def get_prediction(self):
             return self.prediction
 
-    ctx = webrtc_streamer(key="example", video_transformer_factory=VideoTransformer)
+    ctx = webrtc_streamer(key="example", video_processor_factory=VideoProcessor)
 
 
 #Tentang
