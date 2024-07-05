@@ -137,7 +137,7 @@ if choice == "Beranda":
         st.markdown('<p class="description-font">Mari eksplorasi keindahan dan makna dari setiap motif batik Semarang.</p>', unsafe_allow_html=True)
     
     with col2:
-        st.image("logo.JPG", caption='Gambar Batik Semarang', use_column_width=True)
+        st.image("logo.jpg", caption='Gambar Batik Semarang', use_column_width=True)
 
 # Jenis Batik
 elif choice == "Jenis Batik":
