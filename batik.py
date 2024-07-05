@@ -93,9 +93,9 @@ def predict_batik(image):
     return predicted_class
 
 # Function to process the image from the camera
-def process_image(img_pil):
-    prediction = predict_batik(img_pil)
-    return prediction
+# def process_image(img_pil):
+#     prediction = predict_batik(img_pil)
+#     return prediction
 
 # Custom CSS
 st.markdown("""
@@ -211,7 +211,7 @@ elif choice == "Kamera":
         img_pil = Image.open(img_file_buffer)
         
         # Process the image
-        prediction = process_image(img_pil)
+        prediction = predict_batik(img_pil)
         
         # Display the prediction
         st.write(f"Prediction: {prediction}")
