@@ -68,6 +68,18 @@ batik_details = {
 }
 
 # Function to predict batik name
+# def predict_batik(image):
+#     image = image.resize((256, 256))  # Resize the image to the expected input size
+#     image_array = np.array(image) / 255.0
+#     image_array = np.expand_dims(image_array, axis=0)
+#     predictions = model.predict(image_array)
+#     print(predictions)
+#     max_prediction = np.max(predictions)
+#     if max_prediction < 0.95:  # Threshold for prediction confidence
+#         return "Tidak dapat diprediksi"
+#     predicted_class = class_names[np.argmax(predictions)]
+#     return predicted_class
+
 def predict_batik(image):
     image = image.resize((256, 256))  # Resize the image to the expected input size
     image_array = np.array(image) / 255.0
@@ -79,6 +91,11 @@ def predict_batik(image):
         return "Tidak dapat diprediksi"
     predicted_class = class_names[np.argmax(predictions)]
     return predicted_class
+
+# Function to process the image from the camera
+def process_image(img_pil):
+    prediction = predict_batik(img_pil)
+    return prediction
 
 # Custom CSS
 st.markdown("""
@@ -171,23 +188,41 @@ elif choice == "Kamera":
     st.markdown('<p class="header-font">Kamera</p>', unsafe_allow_html=True)
     st.markdown('<p class="description-font">Hanya dapat diakses atau digunakan dengan kamera webcam (desktop).</p>', unsafe_allow_html=True)
 
-    class VideoProcessor(VideoProcessorBase):
-        def __init__(self):
-            self.prediction = ""
+    # class VideoProcessor(VideoProcessorBase):
+    #     def __init__(self):
+    #         self.prediction = ""
 
-        def transform(self, frame):
-            img = frame.to_ndarray(format="bgr24")
-            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            img_pil = Image.fromarray(img_rgb)
-            self.prediction = predict_batik(img_pil)
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(img, self.prediction, (50, 50), font, 1, (255, 0, 0), 2, cv2.LINE_AA)
-            return img
+    #     def transform(self, frame):
+    #         img = frame.to_ndarray(format="bgr24")
+    #         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    #         img_pil = Image.fromarray(img_rgb)
+    #         self.prediction = predict_batik(img_pil)
+    #         font = cv2.FONT_HERSHEY_SIMPLEX
+    #         cv2.putText(img, self.prediction, (50, 50), font, 1, (255, 0, 0), 2, cv2.LINE_AA)
+    #         return img
 
-        def get_prediction(self):
-            return self.prediction
+    #     def get_prediction(self):
+    #         return self.prediction
 
-    ctx = webrtc_streamer(key="example", video_processor_factory=VideoProcessor)
+    # ctx = webrtc_streamer(key="example", video_processor_factory=VideoProcessor)
+    img_file_buffer = st.camera_input("Take a picture")
+    if img_file_buffer is not None:
+        # To read image file buffer with PIL:
+        img_pil = Image.open(img_file_buffer)
+        
+        # Process the image
+        prediction = process_image(img_pil)
+        
+        # Display the prediction
+        st.write(f"Prediction: {prediction}")
+        
+        # Display the image with the prediction text
+        img_rgb = np.array(img_pil)
+        img_bgr = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(img_bgr, prediction, (50, 50), font, 1, (255, 0, 0), 2, cv2.LINE_AA)
+        
+        st.image(img_bgr, channels="BGR")
 
 
 #Tentang
